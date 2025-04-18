@@ -24,3 +24,20 @@ h5 {
 small {
 	color: red;
 }
+
+.custom-card-body {
+  background-color: #343a40; /* Dark gray */
+  color: #ffffff; /* White text */
+}
+
+.custom-list-item {
+  background-color: #212529; /* Slightly darker shade */
+  color: #ffffff; /* White text */
+}
+
+
+.custom-list-item {
+  background-color: #212529; /* Bootstrap "dark" */
+  color: #ffffff; /* White text */
+  border: none; /* Remove default border */
+}

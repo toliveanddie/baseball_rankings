@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_16_140242) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_18_160010) do
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.datetime "created_at", null: false
@@ -22,5 +22,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_140242) do
     t.integer "rating"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "post_id", null: false
+    t.index ["post_id"], name: "index_teams_on_post_id"
   end
+
+  add_foreign_key "teams", "posts"
 end
