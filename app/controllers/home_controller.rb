@@ -4,4 +4,11 @@ class HomeController < ApplicationController
 
   def weekly
   end
+
+	def players
+	end
+
+	def wplayers
+	end
+	
 end
