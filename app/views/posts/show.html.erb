@@ -21,6 +21,16 @@
 				<% end %>
 			</ol>
 		</div>
+		<div class="col">
+			<h3>Pitchers</h3>
+			<ol>
+				<% if @post_pitchers.present? %>
+					<% @post_pitchers.pitchers.each do |pitcher| %>
+						<li class="text-white"><h5><%= pitcher.name %><h5></li>
+					<% end %>
+				<% end %>
+			</ol>
+		</div>
 	</div
 
   <div class="mt-3">
