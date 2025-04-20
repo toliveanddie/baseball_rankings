@@ -70,27 +70,27 @@ module HomeHelper
 			phold.push(data.content.strip)
 		end
 
+		rstats = []
+		fstats = []
 		pstats = []
-		pteams = Hash.new {|hash,key| hash[key] = []}
+		rteams = Hash.new {|hash,key| hash[key] = []}
+		fteams = Hash.new {|hash,key| hash[key] = []}
 		names.each do |name|
 			pstats = []
+			rstats = []
+			fstats = []
 			pstats = phold.shift(20)
-			pstats.shift(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(6)
-			pteams[name] = pstats
+			fstats = pstats.values_at(7, 17)
+			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
+			rteams[name] = rstats
+			fteams[name] = fstats
 		end
 
-		pstats.size.times do |i|
+		holder = Hash.new {|hash,key| hash[key] = []}
+		rstats.size.times do |i|
 			holder.clear
 			hold = []
-			pteams.each do |team,stats|
+			rteams.each do |team,stats|
 				holder[team] = stats[i]
 			end
 			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
@@ -102,8 +102,23 @@ module HomeHelper
 				rankings[team] << index
 			end
 		end
-		return rankings
 
+		fstats.size.times do |i|
+			holder.clear
+			hold = []
+			fteams.each do |team,stats|
+				holder[team] = stats[i]
+			end
+			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
+				holder.each do |team,stat|
+					hold.push(team) if stat.to_f == s
+				end
+			end
+			hold.each_with_index do |team, index|
+				rankings[team] << index
+			end
+		end
+		return rankings
 	end #over_all
 
 ##############################   Pitching #######################
@@ -120,30 +135,28 @@ module HomeHelper
 			phold.push(data.content.strip)
 		end
 
+		rstats = []
+		fstats = []
 		pstats = []
-		pteams = Hash.new {|hash,key| hash[key] = []}
+		rteams = Hash.new {|hash,key| hash[key] = []}
+		fteams = Hash.new {|hash,key| hash[key] = []}
 		names.each do |name|
 			pstats = []
+			rstats = []
+			fstats = []
 			pstats = phold.shift(20)
-			pstats.shift(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(6)
-			pteams[name] = pstats
+			fstats = pstats.values_at(7, 17)
+			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
+			rteams[name] = rstats
+			fteams[name] = fstats
 		end
 
-		rankings = Hash.new{|hash,key| hash[key] = []}
-		holder = Hash.new{|hash,key| hash[key] = []}
-
-		pstats.size.times do |i|
+		rankings = Hash.new {|hash,key| hash[key] = []}
+		holder = Hash.new {|hash,key| hash[key] = []}
+		rstats.size.times do |i|
 			holder.clear
 			hold = []
-			pteams.each do |team,stats|
+			rteams.each do |team,stats|
 				holder[team] = stats[i]
 			end
 			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
@@ -155,8 +168,24 @@ module HomeHelper
 				rankings[team] << index
 			end
 		end
+
+		fstats.size.times do |i|
+			holder.clear
+			hold = []
+			fteams.each do |team,stats|
+				holder[team] = stats[i]
+			end
+			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
+				holder.each do |team,stat|
+					hold.push(team) if stat.to_f == s
+				end
+			end
+			hold.each_with_index do |team, index|
+				rankings[team] << index
+			end
+		end
 		return rankings
-	end # pitching
+	end #pitching
 
 	#################  batting ######################
 
@@ -226,7 +255,7 @@ module HomeHelper
 
 	def wover_all
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-6'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -288,33 +317,33 @@ module HomeHelper
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
-
+		
 		phold = []
 		doc.css('td').each do |data|
 			phold.push(data.content.strip)
 		end
-
+		
+		rstats = []
+		fstats = []
 		pstats = []
-		pteams = Hash.new {|hash,key| hash[key] = []}
+		rteams = Hash.new {|hash,key| hash[key] = []}
+		fteams = Hash.new {|hash,key| hash[key] = []}
 		names.each do |name|
 			pstats = []
+			rstats = []
+			fstats = []
 			pstats = phold.shift(20)
-			pstats.shift(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(6)
-			pteams[name] = pstats
+			fstats = pstats.values_at(7, 17)
+			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
+			rteams[name] = rstats
+			fteams[name] = fstats
 		end
-
-		pstats.size.times do |i|
+		
+		holder = Hash.new {|hash,key| hash[key] = []}
+		rstats.size.times do |i|
 			holder.clear
 			hold = []
-			pteams.each do |team,stats|
+			rteams.each do |team,stats|
 				holder[team] = stats[i]
 			end
 			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
@@ -326,8 +355,23 @@ module HomeHelper
 				rankings[team] << index
 			end
 		end
+		
+		fstats.size.times do |i|
+			holder.clear
+			hold = []
+			fteams.each do |team,stats|
+				holder[team] = stats[i]
+			end
+			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
+				holder.each do |team,stat|
+					hold.push(team) if stat.to_f == s
+				end
+			end
+			hold.each_with_index do |team, index|
+				rankings[team] << index
+			end
+		end
 		return rankings
-
 	end #wover_all
 
 ##############################   weekly Pitching #######################
@@ -338,39 +382,53 @@ module HomeHelper
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
-
+		
 		phold = []
 		doc.css('td').each do |data|
 			phold.push(data.content.strip)
 		end
-
+		
+		rstats = []
+		fstats = []
 		pstats = []
-		pteams = Hash.new {|hash,key| hash[key] = []}
+		rteams = Hash.new {|hash,key| hash[key] = []}
+		fteams = Hash.new {|hash,key| hash[key] = []}
 		names.each do |name|
 			pstats = []
+			rstats = []
+			fstats = []
 			pstats = phold.shift(20)
-			pstats.shift(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(2)
-			pstats.delete_at(6)
-			pteams[name] = pstats
+			fstats = pstats.values_at(7, 17)
+			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
+			rteams[name] = rstats
+			fteams[name] = fstats
 		end
-
-		rankings = Hash.new{|hash,key| hash[key] = []}
-		holder = Hash.new{|hash,key| hash[key] = []}
-
-		pstats.size.times do |i|
+		
+		rankings = Hash.new {|hash,key| hash[key] = []}
+		holder = Hash.new {|hash,key| hash[key] = []}
+		rstats.size.times do |i|
 			holder.clear
 			hold = []
-			pteams.each do |team,stats|
+			rteams.each do |team,stats|
 				holder[team] = stats[i]
 			end
 			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
+				holder.each do |team,stat|
+					hold.push(team) if stat.to_f == s
+				end
+			end
+			hold.each_with_index do |team, index|
+				rankings[team] << index
+			end
+		end
+		
+		fstats.size.times do |i|
+			holder.clear
+			hold = []
+			fteams.each do |team,stats|
+				holder[team] = stats[i]
+			end
+			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
 				holder.each do |team,stat|
 					hold.push(team) if stat.to_f == s
 				end
