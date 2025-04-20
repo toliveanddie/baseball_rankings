@@ -1,19 +1,29 @@
 <div class="container mt-4">
   <h1 class="text-center">Post Details</h1>
   <p>
-    <strong>Title:</strong>
     <%= @post.title %>
   </p>
 
-  <h3>Teams:</h3>
-  <ol>
-    <% @post.teams.each do |team| %>
-      <li class="text-white"><h5><%= team.name %><h5></li>
-    <% end %>
-  </ol>
+	<div class="row">
+		<div class="col">
+			<h3>Teams</h3>
+			<ol>
+				<% @post_teams.teams.each do |team| %>
+					<li class="text-white"><h5><%= team.name %><h5></li>
+				<% end %>
+			</ol>
+		</div>
+		<div class="col">
+			<h3>Players</h3>
+			<ol>
+				<% @post_players.players.each do |player| %>
+					<li class="text-white"><h5><%= player.name %><h5></li>
+				<% end %>
+			</ol>
+		</div>
+	</div
 
   <div class="mt-3">
-    <%= link_to 'Edit', edit_post_path(@post), class: 'btn btn-primary' %>
     <%= link_to 'Delete Post', post_path(@post), class: 'btn btn-danger', data: { "turbo-method": :delete, confirm: 'Are you sure?' } %>
     <%= link_to 'Back', posts_path, class: 'btn btn-secondary' %>
   </div>

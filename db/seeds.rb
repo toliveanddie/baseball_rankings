@@ -17,7 +17,7 @@ require 'csv'
 csv_path = Rails.root.join('teams.csv')
 
 # Scrape stats from MLB team stats page
-doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-6'))
+doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
 
 names = []
 doc.css('.full-G_bAyq40').each do |data|
@@ -81,7 +81,7 @@ end
 end
 
 # Scrape stats from MLB pitching stats page
-doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-6'))
+doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
 
 names = []
 doc.css('.full-G_bAyq40').each do |data|
@@ -132,8 +132,6 @@ rankings.each do |team, stats|
   rankings[team] = stats.sum / stats.size
 end
 
-puts "CSV file 'teams.csv' created successfully!"
-
 # Set post title to the current date
 current_date = Time.now.strftime("%B %d, %Y") # e.g., "April 18, 2025"
 
@@ -144,3 +142,55 @@ rankings.sort_by { |team, ranking| ranking }.reverse.to_h.each do |team, ranking
 end
 
 puts "Post titled '#{post.title}' created with teams loaded"
+
+
+###################### players #################################
+
+
+doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/hits?timeframe=-7'))
+	n = []
+	doc.css('.full-G_bAyq40').each do |data|
+		n.push(data.content.strip)
+	end
+	
+	names = []
+	names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
+
+	dhold = []
+	doc.css('td').each do |data|
+		dhold.push(data.content.strip)
+	end
+
+	dstats = []
+	players = Hash.new {|hash,key| hash[key] = []}
+	names.each do |name|
+		dstats = []
+		dstats = dhold.shift(17)
+		p = "#{name}, #{dstats[0]}"
+		dstats.shift(3)
+		dstats.delete_at(7)
+		dstats.delete_at(8)
+		players[p] = dstats
+	end
+
+	rankings.clear
+	dstats.size.times do |i|
+		holder.clear
+		hold = []
+		players.each do |team,stats|
+			holder[team] = stats[i]
+		end
+		holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
+			holder.each do |team,stat|
+				hold.push(team) if stat.to_f == s
+			end
+		end
+		hold.each_with_index do |team, index|
+			rankings[team] << index
+		end
+	end
+	rankings.sort_by { |player, ranking| ranking }.reverse.to_h.each do |player, ranking|
+		post.players.create(name: player)
+	end
+
+	puts "players added to the post!"

@@ -283,7 +283,7 @@ module HomeHelper
 			end
 		end
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-6'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -333,7 +333,7 @@ module HomeHelper
 ##############################   weekly Pitching #######################
 
 	def wpitching
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-6'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -385,7 +385,7 @@ module HomeHelper
 	#################  weekly batting ######################
 
 	def wbatting
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-6'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -497,7 +497,7 @@ module HomeHelper
 
 	def wbplayers
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/hits?timeframe=-6'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/hits?timeframe=-7'))
 		n = []
 		doc.css('.full-G_bAyq40').each do |data|
 			n.push(data.content.strip)
