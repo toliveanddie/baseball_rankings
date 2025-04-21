@@ -582,10 +582,11 @@ module HomeHelper
 			rstats = []
 			fstats = []
 			pstats = phold.shift(20)
+			p = "#{name}, #{pstats[0]}"
 			fstats = pstats.values_at(1, 10, 17)
 			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
-			rteams[name] = rstats
-			fteams[name] = fstats
+			rteams[p] = rstats
+			fteams[p] = fstats
 		end
 
 		rankings = Hash.new {|hash,key| hash[key] = []}
@@ -628,50 +629,42 @@ module HomeHelper
 
 	def wbplayers
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/hits?timeframe=-7'))
+		names = []
 		n = []
-		doc.css('.full-G_bAyq40').each do |data|
-			n.push(data.content.strip)
+		sholder = []
+		pages = ['https://www.mlb.com/stats/ops?timeframe=-7',
+						'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
+						'https://www.mlb.com/stats/ops?page=3&timeframe=-7']
+		pages.each do |page|
+			doc = Nokogiri::HTML(URI.open(page))
+			doc.css('.full-G_bAyq40').each do |data|
+				n.push(data.content.strip)
+			end
+
+			doc.css('td').each do |data|
+				sholder.push(data.content.strip)
+			end
+		end
+
+		all_stats = []
+		sholder.each_slice(17) do |slice|
+			all_stats << slice
 		end
 
 		names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
 
-		dhold = []
-		doc.css('td').each do |data|
-			dhold.push(data.content.strip)
-		end
-
-		dstats = []
 		players = Hash.new {|hash,key| hash[key] = []}
-		other_stats = Hash.new {|hash,key| hash[key] = []}
-		names.each do |name|
-			dstats = []
-			dstats = dhold.shift(17)
-			p = "#{name}, #{dstats[0]}"
-			dstats.shift(3)
-			other_stats[p] << dstats.delete_at(7)
-			other_stats[p] << dstats.delete_at(8)
-			players[p] = dstats
+		all_stats.each_with_index do |stats, index|
+			p = "#{names[index]}, #{stats[0]}"
+			ab = stats[2].to_f
+			work = (stats.values_at(3,8,9,11).map(&:to_f).sum)/ab
+			avg = stats[13].to_f
+			ops = stats[16].to_f
+			players[p] = (work + avg + ops).round(3)
 		end
 
-		holder = Hash.new
-		rankings = Hash.new { |hash, key| hash[key] = [] }
-		dstats.size.times do |i|
-			holder.clear
-			hold = []
-			players.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
-		end
-		return rankings
+		sorted = players.sort_by {|k,v| -v}.to_h
+		return sorted
 
 	end #wbplayers
 
@@ -704,10 +697,11 @@ module HomeHelper
 			rstats = []
 			fstats = []
 			pstats = phold.shift(20)
+			p = "#{name}, #{pstats[0]}"
 			fstats = pstats.values_at(1, 10, 17)
 			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
-			rteams[name] = rstats
-			fteams[name] = fstats
+			rteams[p] = rstats
+			fteams[p] = fstats
 		end
 
 		rankings = Hash.new {|hash,key| hash[key] = []}

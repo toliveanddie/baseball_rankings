@@ -5,8 +5,8 @@
 		<div class="col">
 			<h2>Batting</h2>
 			<ol>
-				<% wbplayers.sort_by { |key, value| value.sum }.reverse.to_h.each do |k,v| %>
-					<li class="text-white"><h5><%= k %> : <small><%= v.sum/v.size %></small></h5></li>
+				<% wbplayers.each do |k,v| %>
+					<li class="text-white"><h5><%= k %> : <small><%= v %></small></h5></li>
 				<% end %>
 			<ol>
 		</div>
