@@ -13,142 +13,144 @@ require 'nokogiri'
 require 'open-uri'
 
 # Scrape stats from MLB team stats page
-doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
+##############################   weekly Pitching #######################
 
-names = []
-doc.css('.full-G_bAyq40').each do |data|
-  names.push(data.content.strip)
-end
+def wpitching
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
+	names = []
+	doc.css('.full-G_bAyq40').each do |data|
+		names.push(data.content.strip)
+	end
 
-dhold = []
-doc.css('td').each do |data|
-  dhold.push(data.content.strip)
-end
+	phold = []
+	doc.css('td').each do |data|
+		phold.push(data.content.strip)
+	end
 
-dstats = []
-teams = Hash.new { |hash, key| hash[key] = [] }
-other_stats = Hash.new { |hash, key| hash[key] = [] }
-
-# Process teams and stats
-names.each do |name|
-  dstats = []
-  dstats = dhold.shift(17)
-  dstats.shift(3)
-  other_stats[name] << dstats.delete_at(7)
-  other_stats[name] << dstats.delete_at(8)
-  teams[name] = dstats
-end
-
-holder = Hash.new
-rankings = Hash.new { |hash, key| hash[key] = [] }
-
-# Ranking logic for stats
-dstats.size.times do |i|
-  holder.clear
-  hold = []
-  teams.each do |team, stats|
-    holder[team] = stats[i]
-  end
-  holder.values.uniq.map { |e| e.to_f }.sort.each do |s|
-    holder.each do |team, stat|
-      hold.push(team) if stat.to_f == s
-    end
-  end
-  hold.each_with_index do |team, index|
-    rankings[team] << index
-  end
-end
-
-# Process additional stats
-2.times do |i|
-  holder.clear
-  hold = []
-  other_stats.each do |team, stats|
-    holder[team] = stats[i]
-  end
-  holder.values.uniq.map { |e| e.to_f }.sort.reverse.each do |s|
-    holder.each do |team, stat|
-      hold.push(team) if stat.to_f == s
-    end
-  end
-  hold.each_with_index do |team, index|
-    rankings[team] << index
-  end
-end
-
-# Scrape stats from MLB pitching stats page
-doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
-
-names = []
-doc.css('.full-G_bAyq40').each do |data|
-	names.push(data.content.strip)
-end
-
-phold = []
-doc.css('td').each do |data|
-	phold.push(data.content.strip)
-end
-
-rstats = []
-fstats = []
-pstats = []
-rteams = Hash.new {|hash,key| hash[key] = []}
-fteams = Hash.new {|hash,key| hash[key] = []}
-names.each do |name|
-	pstats = []
 	rstats = []
 	fstats = []
-	pstats = phold.shift(20)
-	fstats = pstats.values_at(7, 17)
-	rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
-	rteams[name] = rstats
-	fteams[name] = fstats
-end
-
-holder = Hash.new {|hash,key| hash[key] = []}
-rstats.size.times do |i|
-	holder.clear
-	hold = []
-	rteams.each do |team,stats|
-		holder[team] = stats[i]
+	pstats = []
+	rteams = Hash.new {|hash,key| hash[key] = []}
+	fteams = Hash.new {|hash,key| hash[key] = []}
+	names.each do |name|
+		pstats = []
+		rstats = []
+		fstats = []
+		pstats = phold.shift(20)
+		fstats = pstats.values_at(7, 17)
+		rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
+		rteams[name] = rstats
+		fteams[name] = fstats
 	end
-	holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
-		holder.each do |team,stat|
-			hold.push(team) if stat.to_f == s
+
+	rankings = Hash.new {|hash,key| hash[key] = []}
+	holder = Hash.new {|hash,key| hash[key] = []}
+	rstats.size.times do |i|
+		holder.clear
+		hold = []
+		rteams.each do |team,stats|
+			holder[team] = stats[i]
+		end
+		holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
+			holder.each do |team,stat|
+				hold.push(team) if stat.to_f == s
+			end
+		end
+		hold.each_with_index do |team, index|
+			rankings[team] << index
 		end
 	end
-	hold.each_with_index do |team, index|
-		rankings[team] << index
-	end
-end
 
-fstats.size.times do |i|
-	holder.clear
-	hold = []
-	fteams.each do |team,stats|
-		holder[team] = stats[i]
-	end
-	holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
-		holder.each do |team,stat|
-			hold.push(team) if stat.to_f == s
+	fstats.size.times do |i|
+		holder.clear
+		hold = []
+		fteams.each do |team,stats|
+			holder[team] = stats[i]
+		end
+		holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
+			holder.each do |team,stat|
+				hold.push(team) if stat.to_f == s
+			end
+		end
+		hold.each_with_index do |team, index|
+			rankings[team] << index
 		end
 	end
-	hold.each_with_index do |team, index|
-		rankings[team] << index
+	rankings.each do |k,v|
+		rankings[k] = v.sum/v.size
 	end
-end
+	sorted = Hash.new
+	rankings.sort_by{|k,v| -v}.each_with_index do |pair, index|
+		sorted[pair[0]] = index
+	end
+	return sorted
+end # wpitching
 
-# Calculate average ranking for teams
-rankings.each do |team, stats|
-  rankings[team] = stats.sum / stats.size
-end
+#################  weekly batting ######################
+
+def wbatting
+	names = []
+	sholder = []
+
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
+	doc.css('.full-G_bAyq40').each do |data|
+		names.push(data.content.strip)
+	end
+
+	doc.css('td').each do |data|
+		sholder.push(data.content.strip)
+	end
+
+
+	all_stats = []
+	sholder.each_slice(17) do |slice|
+		all_stats << slice
+	end
+
+	teams = Hash.new {|hash,key| hash[key] = []}
+	all_stats.each_with_index do |stats, index|
+		g = stats[1].to_f
+		r = stats[3].to_f
+		h = stats[4].to_f
+		b2 = stats[5].to_f
+		b3 = stats[6].to_f
+		hr = stats[7].to_f
+		rbi = stats[8].to_f
+		bb = stats[9].to_f
+		sb = stats[11].to_f
+		b1 = h - (b2+b3+hr)
+		mr = (r - hr) + rbi
+		totals = (b1 + b2*2 + b3*3 + hr*4 + sb + bb + mr)
+		work = (totals/g).round(3)
+		teams[names[index]] = work
+	end
+
+	rankings = Hash.new
+	teams.sort_by {|k,v| -v}.each_with_index do |pair, index|
+		rankings[pair[0]] = index
+	end
+	return rankings
+end # wbatting
+
+######################  weekly overall ########################
+
+
+def wover_all
+
+	rankings = Hash.new
+	wpitching.each do |k,v|
+		rankings[k] = wpitching[k] + wbatting[k]
+	end
+	return rankings.sort_by{|k,v| v}.to_h
+	
+end #wover_all
 
 # Set post title to the current date
 current_date = Time.now.strftime("%B %d, %Y") # e.g., "April 18, 2025"
 
 # Create a new post and add teams from CSV
 post = Post.create(title: current_date)
-rankings.sort_by { |team, ranking| ranking }.reverse.to_h.each do |team, ranking|
+wover_all.each do |team, ranking|
   post.teams.create(name: team)
 end
 
