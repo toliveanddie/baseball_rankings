@@ -105,7 +105,6 @@ names.each do |name|
 	fteams[name] = fstats
 end
 
-rankings = Hash.new {|hash,key| hash[key] = []}
 holder = Hash.new {|hash,key| hash[key] = []}
 rstats.size.times do |i|
 	holder.clear
