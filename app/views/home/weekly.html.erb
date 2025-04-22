@@ -3,26 +3,26 @@
 <div class="container">
 	<div class="row">
 		<div class="col">
-			<h2>Overall</h2>
-			<ol>
-				<% wover_all.sort_by { |key, value| value.sum }.reverse.to_h.each do |k,v| %>
-					<li class="text-white"><h5><%= k %> : <small><%= v.sum/v.size %></small></h5></li>
-				<% end %>
-			<ol>
-		</div>
-		<div class="col">
 			<h2>Pitching</h2>
 			<ol>
-				<% wpitching.sort_by { |key, value| value.sum }.reverse.to_h.each do |k,v| %>
-					<li class="text-white"><h5><%= k %> : <small><%= v.sum/v.size %></small></h5></li>
+				<% wpitching.each do |k,v| %>
+					<li class="text-white"><h5><%= k %></h5></li>
 				<% end %>
 			<ol>
 		</div>
 		<div class="col">
 			<h2>Batting</h2>
 			<ol>
-				<% wbatting.sort_by { |key, value| value.sum }.reverse.to_h.each do |k,v| %>
-					<li class="text-white"><h5><%= k %> : <small><%= v.sum/v.size %></small></h5></li>
+				<% wbatting.each do |k,v| %>
+					<li class="text-white"><h5><%= k %></h5></li>
+				<% end %>
+			<ol>
+		</div>
+		<div class="col">
+			<h2>Weekly Overall</h2>
+			<ol>
+				<% wover_all.each do |k,v| %>
+					<li class="text-white"><h5><%= k %></h5></li>
 				<% end %>
 			<ol>
 		</div>

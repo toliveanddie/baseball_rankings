@@ -124,135 +124,11 @@ module HomeHelper
 
 		rankings = Hash.new
 		pitching.each do |k,v|
-			rankings[k] = (pitching[k] + batting[k])/2
+			rankings[k] = pitching[k] + batting[k]
 		end
 		return rankings.sort_by{|k,v| v}.to_h
 		
 	end #over_all
-
-
-	######################  weekly overall ########################
-
-
-	def wover_all
-
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
-		names = []
-		doc.css('.full-G_bAyq40').each do |data|
-			names.push(data.content.strip)
-		end
-
-		dhold = []
-		doc.css('td').each do |data|
-			dhold.push(data.content.strip)
-		end
-
-		dstats = []
-		teams = Hash.new {|hash,key| hash[key] = []}
-		other_stats = Hash.new {|hash,key| hash[key] = []}
-		names.each do |name|
-			dstats = []
-			dstats = dhold.shift(17)
-			dstats.shift(3)
-			other_stats[name] << dstats.delete_at(7)
-			other_stats[name] << dstats.delete_at(8)
-			teams[name] = dstats
-		end
-
-		holder = Hash.new
-		rankings = Hash.new { |hash, key| hash[key] = [] }
-		dstats.size.times do |i|
-			holder.clear
-			hold = []
-			teams.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
-		end
-
-		2.times do |i|
-			holder.clear
-			hold = []
-			other_stats.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
-		end
-
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
-		names = []
-		doc.css('.full-G_bAyq40').each do |data|
-			names.push(data.content.strip)
-		end
-		
-		phold = []
-		doc.css('td').each do |data|
-			phold.push(data.content.strip)
-		end
-		
-		rstats = []
-		fstats = []
-		pstats = []
-		rteams = Hash.new {|hash,key| hash[key] = []}
-		fteams = Hash.new {|hash,key| hash[key] = []}
-		names.each do |name|
-			pstats = []
-			rstats = []
-			fstats = []
-			pstats = phold.shift(20)
-			fstats = pstats.values_at(7, 17)
-			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
-			rteams[name] = rstats
-			fteams[name] = fstats
-		end
-		
-		rstats.size.times do |i|
-			holder.clear
-			hold = []
-			rteams.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
-		end
-		
-		fstats.size.times do |i|
-			holder.clear
-			hold = []
-			fteams.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
-		end
-		return rankings
-	end #wover_all
 
 ##############################   weekly Pitching #######################
 
@@ -262,12 +138,12 @@ module HomeHelper
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
-		
+
 		phold = []
 		doc.css('td').each do |data|
 			phold.push(data.content.strip)
 		end
-		
+
 		rstats = []
 		fstats = []
 		pstats = []
@@ -283,7 +159,7 @@ module HomeHelper
 			rteams[name] = rstats
 			fteams[name] = fstats
 		end
-		
+
 		rankings = Hash.new {|hash,key| hash[key] = []}
 		holder = Hash.new {|hash,key| hash[key] = []}
 		rstats.size.times do |i|
@@ -301,7 +177,7 @@ module HomeHelper
 				rankings[team] << index
 			end
 		end
-		
+
 		fstats.size.times do |i|
 			holder.clear
 			hold = []
@@ -317,70 +193,75 @@ module HomeHelper
 				rankings[team] << index
 			end
 		end
-		return rankings
+		rankings.each do |k,v|
+			rankings[k] = v.sum/v.size
+		end
+		sorted = Hash.new
+		rankings.sort_by{|k,v| -v}.each_with_index do |pair, index|
+			sorted[pair[0]] = index
+		end
+		return sorted
 	end # wpitching
 
 	#################  weekly batting ######################
 
 	def wbatting
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
 		names = []
+		sholder = []
+
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
 
-		dhold = []
 		doc.css('td').each do |data|
-			dhold.push(data.content.strip)
+			sholder.push(data.content.strip)
 		end
 
-		dstats = []
+
+		all_stats = []
+		sholder.each_slice(17) do |slice|
+			all_stats << slice
+		end
+
 		teams = Hash.new {|hash,key| hash[key] = []}
-		other_stats = Hash.new {|hash,key| hash[key] = []}
-		names.each do |name|
-			dstats = []
-			dstats = dhold.shift(17)
-			dstats.shift(3)
-			other_stats[name] << dstats.delete_at(7)
-			other_stats[name] << dstats.delete_at(8)
-			teams[name] = dstats
+		all_stats.each_with_index do |stats, index|
+			g = stats[1].to_f
+			r = stats[3].to_f
+			h = stats[4].to_f
+			b2 = stats[5].to_f
+			b3 = stats[6].to_f
+			hr = stats[7].to_f
+			rbi = stats[8].to_f
+			bb = stats[9].to_f
+			sb = stats[11].to_f
+			b1 = h - (b2+b3+hr)
+			mr = (r - hr) + rbi
+			totals = (b1 + b2*2 + b3*3 + hr*4 + sb + bb + mr)
+			work = (totals/g).round(3)
+			teams[names[index]] = work
 		end
 
-		holder = Hash.new
-		rankings = Hash.new { |hash, key| hash[key] = [] }
-		dstats.size.times do |i|
-			holder.clear
-			hold = []
-			teams.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
-		end
-
-		2.times do |i|
-			holder.clear
-			hold = []
-			other_stats.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
+		rankings = Hash.new
+		teams.sort_by {|k,v| -v}.each_with_index do |pair, index|
+			rankings[pair[0]] = index
 		end
 		return rankings
 	end # wbatting
+
+	######################  weekly overall ########################
+
+
+	def wover_all
+
+		rankings = Hash.new
+		wpitching.each do |k,v|
+			rankings[k] = wpitching[k] + wbatting[k]
+		end
+		return rankings.sort_by{|k,v| v}.to_h
+		
+	end #wover_all
+
 
 	######################################### player overall ranks  #####################################
 
