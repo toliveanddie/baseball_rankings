@@ -163,8 +163,8 @@ names = []
 n = []
 sholder = []
 pages = ['https://www.mlb.com/stats/ops?timeframe=-7',
-				 'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
-				 'https://www.mlb.com/stats/ops?page=3&timeframe=-7']
+				'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
+				'https://www.mlb.com/stats/ops?page=3&timeframe=-7']
 pages.each do |page|
 	doc = Nokogiri::HTML(URI.open(page))
 	doc.css('.full-G_bAyq40').each do |data|
@@ -186,11 +186,20 @@ names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
 players = Hash.new {|hash,key| hash[key] = []}
 all_stats.each_with_index do |stats, index|
 	p = "#{names[index]}, #{stats[0]}"
-	ab = stats[2].to_f
-	work = (stats.values_at(3,8,9,11).map(&:to_f).sum)/ab
-	avg = stats[13].to_f
-	ops = stats[16].to_f
-	players[p] = (work + avg + ops).round(3)
+	g = stats[1].to_f
+	r = stats[3].to_f
+	h = stats[4].to_f
+	b2 = stats[5].to_f
+	b3 = stats[6].to_f
+	hr = stats[7].to_f
+	rbi = stats[8].to_f
+	bb = stats[9].to_f
+	sb = stats[11].to_f
+	b1 = h - (b2+b3+hr)
+	mr = (r - hr) + rbi
+	totals = (b1 + b2*2 + b3*3 + hr*4 + sb + bb + mr)
+	work = (totals/g).round(3)
+	players[p] = work
 end
 
 sorted = players.sort_by {|k,v| -v}.to_h
@@ -272,7 +281,7 @@ fstats.size.times do |i|
 	end
 end
 
-rankings.sort_by { |pitcher, ranking| ranking }.reverse.to_h.each do |pitcher, ranking|
+rankings.sort_by { |pitcher, ranking| ranking.sum }.reverse.to_h.each do |pitcher, ranking|
 	post.pitchers.create(name: pitcher)
 end
 
