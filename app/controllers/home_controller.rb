@@ -10,5 +10,8 @@ class HomeController < ApplicationController
 
 	def wplayers
 	end
+
+	def weeklyleaders
+	end
 	
 end

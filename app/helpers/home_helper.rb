@@ -511,7 +511,53 @@ module HomeHelper
 		return rankings
 	end #wbpitching
 
+	########################### weekly individual stat leaders #######################
 
+	def stat_leaders
+		names = []
+		n = []
+		sholder = []
+		pages = ['https://www.mlb.com/stats/ops?timeframe=-7',
+						'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
+						'https://www.mlb.com/stats/ops?page=3&timeframe=-7',
+						'https://www.mlb.com/stats/ops?page=4&timeframe=-7']
+
+		pages.each do |page|
+			doc = Nokogiri::HTML(URI.open(page))
+			doc.css('.full-G_bAyq40').each do |data|
+				n.push(data.content.strip)
+			end
+
+			doc.css('td').each do |data|
+				sholder.push(data.content.strip)
+			end
+		end
+
+		all_stats = []
+		sholder.each_slice(17) do |slice|
+			all_stats << slice
+		end
+
+		names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
+
+		players = Hash.new {|hash,key| hash[key] = []}
+		all_stats.each_with_index do |stats, index|
+			p = "#{names[index]}, #{stats[0]}"
+			stats.shift(2)
+			players[p] = stats.map(&:to_f)
+		end
+
+		stat_name = ['AB', 'R', 'H', '2B', '3B', 'HR', 'RBI', 'BB', 'SO', 'SB', 'CS', 'AVG', 'OBP', 'SLG', 'OPS']
+		leaders = Hash.new
+		stat_name.each_with_index do |stat, index|
+			sorted = players.sort_by {|name, stats| -stats[index]}
+			top_three = sorted.first(3).map do |player|
+				{ name: player[0], stat: player[1][index]}
+			end
+			leaders[stat] = top_three
+		end
+		return leaders
+	end #stat_leaders
 
 
 

@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get "home/weekly", to: "home#weekly"
 	get "home/players", to: "home#players"
 	get "home/wplayers", to: "home#wplayers"
+	get "home/weeklyleaders", to: "home#weeklyleaders"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

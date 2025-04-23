@@ -41,3 +41,7 @@ small {
   color: #ffffff; /* White text */
   border: none; /* Remove default border */
 }
+
+.col-4 {
+	padding-bottom: 20px;
+}
