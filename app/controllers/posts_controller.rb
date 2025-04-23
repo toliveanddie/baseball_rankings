@@ -11,6 +11,7 @@ class PostsController < ApplicationController
 		@post_teams = Post.includes(:teams).find(params[:id])
 		@post_players = Post.includes(:players).find(params[:id])
 		@post_pitchers = Post.includes(:pitchers).find(params[:id])
+		@post_leaders = Post.includes(:leaders).find(params[:id])
   end
 
   # GET /posts/new
