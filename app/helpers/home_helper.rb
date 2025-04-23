@@ -513,7 +513,7 @@ module HomeHelper
 
 	########################### weekly individual stat leaders #######################
 
-	def stat_leaders
+	def batting_leaders
 		names = []
 		n = []
 		sholder = []
@@ -557,7 +557,7 @@ module HomeHelper
 			leaders[stat] = top_three
 		end
 		return leaders
-	end #stat_leaders
+	end #batting_leaders
 
 
 
