@@ -39,7 +39,7 @@
 </div>
 <div class = "container">
 	<div class="row">
-	<h1 style="color: blue !important;">Weekly Batting Leaders</h1>
+	<h1 style="color: blue !important;">7 Day Batting Leaders</h1>
 		<% @post_leaders.leaders.each do |leader| %>
 			<div class="col-4">
 			  <h4><%= leader.stat %></h4>
@@ -48,7 +48,7 @@
 				<h5><%= leader.name3 %>: <small><%= leader.stat3 %></small></h5>
 			</div> 
 		<% end %>
-		<h1 style="color: blue !important;">Weekly Pitching Leaders</h1>
+		<h1 style="color: blue !important;">15 Day Pitching Leaders</h1>
 		<% @post_pleaders.pleaders.each do |pleader| %>
 			<div class="col-4">
 			  <h4><%= pleader.stat %></h4>
