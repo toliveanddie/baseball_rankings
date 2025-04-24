@@ -1,11 +1,20 @@
 <div class = "container">
-	<h1>Weekly Batting Stat Leaders</h1>
 	<div class="row">
+	<h1 style="color: blue !important;">7 day Batting Stat Leaders</h1>
 		<% batting_leaders.each do |s, players| %>
 			<div class="col-4">
 			  <h4><%= s %></h4>
 				<% players.each do |player| %>
-					<h5><%= player[:name] %>: <%= player[:stat] %></h5>
+					<h5><%= player[:name] %>: <small><%= player[:stat] %></small></h5>
+				<% end %>
+			</div> 
+		<% end %>
+		<h1 style="color: blue !important;">15 day Pitching Stat Leaders</h1>
+		<% pitching_leaders.each do |s, players| %>
+			<div class="col-4">
+			  <h4><%= s %></h4>
+				<% players.each do |player| %>
+					<h5><%= player[:name] %>: <small><%= player[:stat] %></small></h5>
 				<% end %>
 			</div> 
 		<% end %>

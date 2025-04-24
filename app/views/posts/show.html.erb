@@ -38,14 +38,23 @@
 	</div
 </div>
 <div class = "container">
-	<h1>Weekly Stat Leaders</h1>
 	<div class="row">
+	<h1 style="color: blue !important;">Weekly Batting Leaders</h1>
 		<% @post_leaders.leaders.each do |leader| %>
 			<div class="col-4">
 			  <h4><%= leader.stat %></h4>
-				<h5><%= leader.name1 %>: <%= leader.stat1 %></h5>
-				<h5><%= leader.name2 %>: <%= leader.stat2 %></h5>
-				<h5><%= leader.name3 %>: <%= leader.stat3 %></h5>
+				<h5><%= leader.name1 %>: <small><%= leader.stat1 %></small></h5>
+				<h5><%= leader.name2 %>: <small><%= leader.stat2 %></small></h5>
+				<h5><%= leader.name3 %>: <small><%= leader.stat3 %></small></h5>
+			</div> 
+		<% end %>
+		<h1 style="color: blue !important;">Weekly Pitching Leaders</h1>
+		<% @post_pleaders.pleaders.each do |pleader| %>
+			<div class="col-4">
+			  <h4><%= pleader.stat %></h4>
+				<h5><%= pleader.name1 %>: <small><%= pleader.stat1 %></small></h5>
+				<h5><%= pleader.name2 %>: <small><%= pleader.stat2 %></small></h5>
+				<h5><%= pleader.name3 %>: <small><%= pleader.stat3 %></small></h5>
 			</div> 
 		<% end %>
 	</div>
