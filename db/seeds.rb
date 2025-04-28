@@ -15,7 +15,7 @@ require 'open-uri'
 # Scrape stats from MLB team stats page
 ##############################   weekly Pitching #######################
 
-def wpitching
+def swpitching
 	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
 	names = []
 	doc.css('.full-G_bAyq40').each do |data|
@@ -84,11 +84,11 @@ def wpitching
 		sorted[pair[0]] = index
 	end
 	return sorted
-end # wpitching
+end # swpitching
 
 #################  weekly batting ######################
 
-def wbatting
+def swbatting
 	names = []
 	sholder = []
 
@@ -130,27 +130,27 @@ def wbatting
 		rankings[pair[0]] = index
 	end
 	return rankings
-end # wbatting
+end # swbatting
 
 ######################  weekly overall ########################
 
 
-def wover_all
+def swover_all
 
 	rankings = Hash.new
-	wpitching.each do |k,v|
-		rankings[k] = wpitching[k] + wbatting[k]
+	swpitching.each do |k,v|
+		rankings[k] = swpitching[k] + swbatting[k]
 	end
 	return rankings.sort_by{|k,v| v}.to_h
 	
-end #wover_all
+end #swover_all
 
 # Set post title to the current date
 current_date = Time.now.strftime("%B %d, %Y") # e.g., "April 18, 2025"
 
 # Create a new post and add teams from CSV
 post = Post.create(title: current_date)
-wover_all.each do |team, ranking|
+swover_all.each do |team, ranking|
   post.teams.create(name: team)
 end
 
@@ -335,7 +335,7 @@ def batting_leaders
 		leaders[stat] = top_three
 	end
 	return leaders
-end
+end #batting_leaders
 
 batting_leaders.each do |stat, players|
 	post.leaders.create(
