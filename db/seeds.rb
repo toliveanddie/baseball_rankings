@@ -51,7 +51,7 @@ def swpitching
 		rteams.each do |team,stats|
 			holder[team] = stats[i]
 		end
-		holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
+		holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
 			holder.each do |team,stat|
 				hold.push(team) if stat.to_f == s
 			end
@@ -67,7 +67,7 @@ def swpitching
 		fteams.each do |team,stats|
 			holder[team] = stats[i]
 		end
-		holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
+		holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
 			holder.each do |team,stat|
 				hold.push(team) if stat.to_f == s
 			end
@@ -79,10 +79,7 @@ def swpitching
 	rankings.each do |k,v|
 		rankings[k] = v.sum/v.size
 	end
-	sorted = Hash.new
-	rankings.sort_by{|k,v| -v}.each_with_index do |pair, index|
-		sorted[pair[0]] = index
-	end
+	sorted = rankings.sort_by{|k,v| v}.to_h
 	return sorted
 end # swpitching
 
@@ -92,7 +89,7 @@ def swbatting
 	names = []
 	sholder = []
 
-	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-7'))
 	doc.css('.full-G_bAyq40').each do |data|
 		names.push(data.content.strip)
 	end
@@ -107,29 +104,30 @@ def swbatting
 		all_stats << slice
 	end
 
-	teams = Hash.new {|hash,key| hash[key] = []}
+	bteams = Hash.new {|hash,key| hash[key] = []}
 	all_stats.each_with_index do |stats, index|
-		g = stats[1].to_f
-		r = stats[3].to_f
-		h = stats[4].to_f
-		b2 = stats[5].to_f
-		b3 = stats[6].to_f
-		hr = stats[7].to_f
-		rbi = stats[8].to_f
-		bb = stats[9].to_f
-		sb = stats[11].to_f
-		b1 = h - (b2+b3+hr)
-		mr = (r - hr) + rbi
-		totals = (b1 + b2*2 + b3*3 + hr*4 + sb + bb + mr)
-		work = (totals/g).round(3)
-		teams[names[index]] = work
+		bteams[names[index]] = stats.values_at(3,8,9,11,13,14,15,16)
 	end
 
-	rankings = Hash.new
-	teams.sort_by {|k,v| -v}.each_with_index do |pair, index|
-		rankings[pair[0]] = index
+	# Initialize an empty hash to store rankings
+	ranked_stats = Hash.new {|hash, key| hash[key] = []}
+
+	# Iterate over each index in the stat arrays
+	(0...bteams.values.first.size).each do |stat_index|
+		# Sort teams based on the stat at the current index
+		ranked = bteams.sort_by { |_, stats| stats[stat_index].to_f }.reverse
+
+		# Assign ranks
+		ranked.each_with_index do |(team, _), rank|
+			ranked_stats[team] << rank
+		end
 	end
-	return rankings
+	
+	ranked_stats.each do |k,v|
+		ranked_stats[k] = v.sum/v.size
+	end
+	sorted = ranked_stats.sort_by{|k,v| v}.to_h
+	return sorted
 end # swbatting
 
 ######################  weekly overall ########################
@@ -139,7 +137,7 @@ def swover_all
 
 	rankings = Hash.new
 	swpitching.each do |k,v|
-		rankings[k] = swpitching[k] + swbatting[k]
+		rankings[k] = (swpitching[k] + swbatting[k])/2
 	end
 	return rankings.sort_by{|k,v| v}.to_h
 	
