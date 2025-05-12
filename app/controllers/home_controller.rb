@@ -13,5 +13,8 @@ class HomeController < ApplicationController
 
 	def weeklyleaders
 	end
+
+	def statcycle
+	end
 	
 end

@@ -613,7 +613,54 @@ module HomeHelper
 	end #pitching_leaders
 
 
+############################## cycle watch ###########################
 
+	def stat_cycle
+
+		players = Hash.new
+		15.downto(1) do |days|
+			names = []
+			n = []
+			sholder = []
+			pages = ['https://www.mlb.com/stats/triples?timeframe=-',
+							'https://www.mlb.com/stats/triples?page=2&timeframe=-',
+							'https://www.mlb.com/stats/triples?page=3&timeframe=-',
+							'https://www.mlb.com/stats/triples?page=4&timeframe=-',
+							'https://www.mlb.com/stats/triples?page=5&timeframe=-']
+			pages.each do |page|
+				full_url = "#{page}#{days}"
+				doc = Nokogiri::HTML(URI.open(full_url))
+				doc.css('.full-G_bAyq40').each do |data|
+					n.push(data.content.strip)
+				end
+
+				doc.css('td').each do |data|
+					sholder.push(data.content.strip)
+				end
+			end
+
+			all_stats = []
+			sholder.each_slice(17) do |slice|
+				all_stats << slice
+			end
+
+			names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
+
+			all_stats.each_with_index do |stats, index|
+				p = "#{names[index]}, #{stats[0]}"
+				h = stats[4].to_i
+				b2 = stats[5].to_i
+				b3 = stats[6].to_i
+				hr = stats[7].to_i
+				b1 = h - (b2+b3+hr)
+				players[p] = days unless [b1,b2,b3,hr].include?(0)
+			end
+			puts days
+		end
+
+		return players.sort_by{|k,v| v}.to_h
+
+	end # stat_cycle
 
 
 
