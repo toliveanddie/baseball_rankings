@@ -618,7 +618,7 @@ module HomeHelper
 	def stat_cycle
 
 		players = Hash.new
-		15.downto(1) do |days|
+		7.downto(1) do |days|
 			names = []
 			n = []
 			sholder = []
