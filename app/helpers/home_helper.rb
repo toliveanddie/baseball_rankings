@@ -615,7 +615,7 @@ module HomeHelper
 
 ############################## cycle watch ###########################
 
-	def stat_cycle
+	def player_stat_cycle
 
 		players = Hash.new
 		7.downto(0) do |days|
@@ -660,8 +660,47 @@ module HomeHelper
 
 		return players.sort_by{|k,v| v}.to_h
 
-	end # stat_cycle
+	end # player_stat_cycle
 
+
+	def team_stat_cycle
+
+		teams = Hash.new
+
+		3.downto(0) do |days|
+			names = []
+			sholder = []
+			base = "https://www.mlb.com/stats/team?timeframe=-"
+			doc = Nokogiri::HTML(URI.open("#{base}#{days}"))
+			doc.css('.full-G_bAyq40').each do |data|
+				names.push(data.content.strip)
+			end
+
+			doc.css('td').each do |data|
+				sholder.push(data.content.strip)
+			end
+
+
+			all_stats = []
+			sholder.each_slice(17) do |slice|
+				all_stats << slice
+			end
+
+
+			all_stats.each_with_index do |stats, index|
+				hits = stats[4].to_i
+				doubles = stats[5].to_i
+				triples = stats[6].to_i
+				homeruns = stats[7].to_i
+				singles = hits - (doubles + triples + homeruns)
+				teams[names[index]] = days unless [singles, doubles, triples, homeruns].include?(0)
+			end
+			puts days
+		end
+
+		return teams.sort_by{|k,v| v}.to_h
+
+	end #team_stat_cycle
 
 
 end #module

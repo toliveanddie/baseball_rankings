@@ -1,7 +1,16 @@
 <h1>Count back to stat cycle</h1>
 
 <div class="container">
-	<% stat_cycle.each do |k,v| %>
-		<h3><%= k %>: <small><%= v %></small></h3>
-	<% end %>
+	<div class="row">
+		<div class="col-4">
+			<% player_stat_cycle.each do |k,v| %>
+				<h3><%= k %>: <small><%= v %></small></h3>
+			<% end %>
+		</div>
+		<div class="col-4">
+			<% team_stat_cycle.each do |k,v| %>
+				<h3><%= k %>: <small><%= v %></small></h3>
+			<% end %>
+		</div>
+	</div>
 </div>
