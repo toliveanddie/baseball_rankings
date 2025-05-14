@@ -667,7 +667,7 @@ module HomeHelper
 
 		teams = Hash.new
 
-		3.downto(0) do |days|
+		7.downto(0) do |days|
 			names = []
 			sholder = []
 			base = "https://www.mlb.com/stats/team?timeframe=-"
