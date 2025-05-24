@@ -300,8 +300,7 @@ module HomeHelper
 			bb = stats[9].to_f
 			sb = stats[11].to_f
 			b1 = h - (b2+b3+hr)
-			mr = (r - hr) + rbi
-			totals = (b1 + b2*2 + b3*3 + hr*4 + sb + bb + mr)
+			totals = (b1 + b2*2 + b3*3 + hr*4 + sb + bb + r + rbi)
 			work = (totals/g).round(3)
 			players[p] = work
 		end
