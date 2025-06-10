@@ -391,7 +391,10 @@ module HomeHelper
 		sholder = []
 		pages = ['https://www.mlb.com/stats/ops?timeframe=-7',
 						'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
-						'https://www.mlb.com/stats/ops?page=3&timeframe=-7']
+						'https://www.mlb.com/stats/ops?page=3&timeframe=-7',
+					  'https://www.mlb.com/stats/ops?page=4&timeframe=-7',
+						'https://www.mlb.com/stats/ops?page=5&timeframe=-7',
+					  'https://www.mlb.com/stats/ops?page=6&timeframe=-7']
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
 			doc.css('.full-G_bAyq40').each do |data|
@@ -413,18 +416,20 @@ module HomeHelper
 		players = Hash.new {|hash,key| hash[key] = []}
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
-			g = stats[1].to_f
-			ab = stats[2].to_f
-			r = stats[3].to_f
-			h = stats[4].to_f
-			b2 = stats[5].to_f
-			b3 = stats[6].to_f
-			hr = stats[7].to_f
-			rbi = stats[8].to_f
-			bb = stats[9].to_f
-			sb = stats[11].to_f
-			totals = (r + h + b2 + b3 + hr + rbi + bb + sb)
-			work = (totals/g).round(2)
+			g = stats[1].to_i
+			ab = stats[2].to_i
+			r = stats[3].to_i
+			h = stats[4].to_i
+			d = stats[5].to_i
+			t = stats[6].to_i
+			hr = stats[7].to_i
+			rbi = stats[8].to_i
+			bb = stats[9].to_i
+			sb = stats[11].to_i
+			br = (r - hr)*4
+			s = h - (d + t + hr)
+			tb = s + (d*2) + (t*3) + (hr*4)
+			work = g + ab + r + br + tb + rbi + bb + sb
 			players[p] = work
 		end
 
