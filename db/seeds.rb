@@ -185,8 +185,7 @@ names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
 players = Hash.new {|hash,key| hash[key] = []}
 all_stats.each_with_index do |stats, index|
 	p = "#{names[index]}, #{stats[0]}"
-	g = stats[1].to_i
-	ab = stats[2].to_i
+	g = stats[1].to_f
 	r = stats[3].to_i
 	h = stats[4].to_i
 	d = stats[5].to_i
@@ -197,7 +196,7 @@ all_stats.each_with_index do |stats, index|
 	sb = stats[11].to_i
 	s = h - (d + t + hr)
 	tb = s + (d*2) + (t*3) + (hr*4)
-	work = g + ab + r + tb + rbi + bb + sb
+	work = ((r + tb + rbi + bb + sb).to_f/g).round(2)
 	players[p] = work
 end
 
