@@ -266,15 +266,13 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		pages = ['https://www.mlb.com/stats/hits',
-						 'https://www.mlb.com/stats/hits?page=2',
-						 'https://www.mlb.com/stats/hits?page=3',
-						 'https://www.mlb.com/stats/hits?page=4',
-					   'https://www.mlb.com/stats/hits?page=5',
-						 'https://www.mlb.com/stats/hits?page=6',
-						 'https://www.mlb.com/stats/hits?page=7',
-						 'https://www.mlb.com/stats/hits?page=8',
-						 'https://www.mlb.com/stats/hits?page=9']
+		pages = (1..25).map do |page_number|
+			if page_number == 1
+				"https://www.mlb.com/stats/hits?"
+			else
+				"https://www.mlb.com/stats/hits?page=#{page_number}"
+			end
+		end
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
 			doc.css('.full-G_bAyq40').each do |data|
