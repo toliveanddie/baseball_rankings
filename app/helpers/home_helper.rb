@@ -393,17 +393,21 @@ module HomeHelper
 
 	def wbplayers
 
+		players = Hash.new
 		names = []
 		n = []
 		sholder = []
-		pages = ['https://www.mlb.com/stats/hits?timeframe=-7',
-						'https://www.mlb.com/stats/hits?page=2&timeframe=-7',
-						'https://www.mlb.com/stats/hits?page=3&timeframe=-7',
-					  'https://www.mlb.com/stats/hits?page=4&timeframe=-7',
-						'https://www.mlb.com/stats/hits?page=5&timeframe=-7',
-					  'https://www.mlb.com/stats/hits?page=6&timeframe=-7']
+		days_back = "7"
+		pages = (1..17).map do |page_number|
+			if page_number == 1
+				"https://www.mlb.com/stats/hits?timeframe=-"
+			else
+				"https://www.mlb.com/stats/hits?page=#{page_number}&timeframe=-"
+			end
+		end
 		pages.each do |page|
-			doc = Nokogiri::HTML(URI.open(page))
+			full_url = "#{page}#{days_back}"
+			doc = Nokogiri::HTML(URI.open(full_url))
 			doc.css('.full-G_bAyq40').each do |data|
 				n.push(data.content.strip)
 			end
@@ -420,7 +424,6 @@ module HomeHelper
 
 		names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
 
-		players = Hash.new {|hash,key| hash[key] = []}
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
 			g = stats[1].to_i
