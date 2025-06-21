@@ -93,7 +93,7 @@ module HomeHelper
 
 		bteams = Hash.new {|hash,key| hash[key] = []}
 		all_stats.each_with_index do |stats, index|
-			bteams[names[index]] = stats.values_at(3,8,9,11,13,14,15,16)
+			bteams[names[index]] = stats.values_at(2,3,4,5,6,7,8,9,11,13,14,15,16)
 		end
 
 		# Initialize an empty hash to store rankings
@@ -451,8 +451,8 @@ module HomeHelper
 		names = []
 		phold = []
 		n = []
-		pages = ['https://www.mlb.com/stats/pitching/era?sortState=asc&timeframe=-14',
-						'https://www.mlb.com/stats/pitching/era?page=2&sortState=asc&timeframe=-14']
+		pages = ['https://www.mlb.com/stats/pitching/era?sortState=asc&timeframe=-15',
+						'https://www.mlb.com/stats/pitching/era?page=2&sortState=asc&timeframe=-15']
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
 			doc.css('.full-G_bAyq40').each do |data|
