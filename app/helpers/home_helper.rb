@@ -398,7 +398,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "7"
+		days_back = "9"
 		pages = (1..17).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/hits?timeframe=-"
@@ -455,7 +455,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "7"
+		days_back = "9"
 		least = 4
 		pages = (1..19).map do |page_number|
 			if page_number == 1
@@ -503,11 +503,11 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		pages = (1..8).map do |page_number|
+		pages = (1..9).map do |page_number|
 			if page_number == 1
-				"https://www.mlb.com/stats/at-bats?timeframe=-7"
+				"https://www.mlb.com/stats/at-bats?timeframe=-9"
 			else
-				"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-7"
+				"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-9"
 			end
 		end
 
@@ -554,10 +554,10 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-15',
-					   'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-15',
-					   'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-15',
-					   'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-15']
+		pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-9',
+					   'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-9',
+					   'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-9',
+					   'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-9']
 
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
