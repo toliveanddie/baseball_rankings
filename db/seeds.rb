@@ -106,7 +106,7 @@ def swbatting
 
 	bteams = Hash.new {|hash,key| hash[key] = []}
 	all_stats.each_with_index do |stats, index|
-		bteams[names[index]] = stats.values_at(3,8,9,11,13,14,15,16)
+		bteams[names[index]] = stats.values_at(2,3,4,5,6,7,8,9,11,13,14,15,16)
 	end
 
 	# Initialize an empty hash to store rankings
@@ -158,33 +158,41 @@ puts "Post titled '#{post.title}' created with teams loaded"
 ###################### players #################################
 
 
+players = Hash.new
 names = []
 n = []
 sholder = []
-pages = ['https://www.mlb.com/stats/ops?timeframe=-7',
-				'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
-				'https://www.mlb.com/stats/ops?page=3&timeframe=-7']
+days_back = "7"
+pages = (1..17).map do |page_number|
+  if page_number == 1
+    "https://www.mlb.com/stats/hits?timeframe=-"
+  else
+    "https://www.mlb.com/stats/hits?page=#{page_number}&timeframe=-"
+  end
+end
 pages.each do |page|
-	doc = Nokogiri::HTML(URI.open(page))
-	doc.css('.full-G_bAyq40').each do |data|
-		n.push(data.content.strip)
-	end
+  full_url = "#{page}#{days_back}"
+  doc = Nokogiri::HTML(URI.open(full_url))
+  doc.css('.full-G_bAyq40').each do |data|
+    n.push(data.content.strip)
+  end
 
-	doc.css('td').each do |data|
-		sholder.push(data.content.strip)
-	end
+  doc.css('td').each do |data|
+    sholder.push(data.content.strip)
+  end
 end
 
 all_stats = []
 sholder.each_slice(17) do |slice|
-	all_stats << slice
+  all_stats << slice
 end
 
 names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
 
-players = Hash.new {|hash,key| hash[key] = []}
 all_stats.each_with_index do |stats, index|
 	p = "#{names[index]}, #{stats[0]}"
+	g = stats[1].to_i
+	ab = stats[2].to_i
 	r = stats[3].to_i
 	h = stats[4].to_i
 	d = stats[5].to_i

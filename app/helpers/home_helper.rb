@@ -221,7 +221,7 @@ module HomeHelper
 
 		bteams = Hash.new {|hash,key| hash[key] = []}
 		all_stats.each_with_index do |stats, index|
-			bteams[names[index]] = stats.values_at(3,8,9,11,13,14,15,16)
+			bteams[names[index]] = stats.values_at(2,3,4,5,6,7,8,9,11,13,14,15,16)
 		end
 
 		# Initialize an empty hash to store rankings
@@ -387,7 +387,7 @@ module HomeHelper
 		return rankings
 	end # ppitching
 
-	############### last 7 days player ranks ####################
+	######################### Weekly player ranks ####################
 
 	def wbplayers
 
@@ -444,6 +444,8 @@ module HomeHelper
 		return sorted
 
 	end #wbplayers
+
+############################ Weekly pitching ###################################
 
 	def wbpitching
 		names = []
