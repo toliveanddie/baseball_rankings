@@ -221,8 +221,10 @@ puts "players added to the post!"
 names = []
 phold = []
 n = []
-pages = ['https://www.mlb.com/stats/pitching/era?sortState=asc&timeframe=-14',
-				 'https://www.mlb.com/stats/pitching/era?page=2&sortState=asc&timeframe=-14']
+pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-15',
+				 'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-15',
+				 'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-15',
+				 'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-15']
 pages.each do |page|
 	doc = Nokogiri::HTML(URI.open(page))
 	doc.css('.full-G_bAyq40').each do |data|
@@ -299,10 +301,13 @@ def batting_leaders
 	names = []
 	n = []
 	sholder = []
-	pages = ['https://www.mlb.com/stats/ops?timeframe=-7',
-					'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
-					'https://www.mlb.com/stats/ops?page=3&timeframe=-7',
-					'https://www.mlb.com/stats/ops?page=4&timeframe=-7']
+	pages = (1..8).map do |page_number|
+		if page_number == 1
+			"https://www.mlb.com/stats/at-bats?timeframe=-7"
+		else
+			"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-7"
+		end
+	end
 
 	pages.each do |page|
 		doc = Nokogiri::HTML(URI.open(page))
@@ -359,9 +364,10 @@ def pitching_leaders
 	names = []
 	n = []
 	sholder = []
-	pages = ['https://www.mlb.com/stats/pitching/era?sortState=asc&timeframe=-15',
-					'https://www.mlb.com/stats/pitching/era?page=2&sortState=asc&timeframe=-15',
-					'https://www.mlb.com/stats/pitching/era?page=3&sortState=asc&timeframe=-15']
+	pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-15',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-15',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-15',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-15']
 
 	pages.each do |page|
 		doc = Nokogiri::HTML(URI.open(page))

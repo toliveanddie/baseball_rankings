@@ -319,8 +319,11 @@ module HomeHelper
 		names = []
 		phold = []
 		n = []
-		pages = ['https://www.mlb.com/stats/pitching/era?sortState=asc',
-						'https://www.mlb.com/stats/pitching/era?page=2&sortState=asc']
+		pages = ['https://www.mlb.com/stats/pitching/innings-pitched',
+						 'https://www.mlb.com/stats/pitching/innings-pitched?page=2',
+						 'https://www.mlb.com/stats/pitching/innings-pitched?page=3',
+						 'https://www.mlb.com/stats/pitching/innings-pitched?page=4',
+						 'https://www.mlb.com/stats/pitching/innings-pitched?page=5']
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
 			doc.css('.full-G_bAyq40').each do |data|
@@ -448,75 +451,50 @@ module HomeHelper
 ############################ Weekly pitching ###################################
 
 	def wbpitching
+		players = Hash.new
 		names = []
-		phold = []
 		n = []
-		pages = ['https://www.mlb.com/stats/pitching/era?sortState=asc&timeframe=-15',
-						'https://www.mlb.com/stats/pitching/era?page=2&sortState=asc&timeframe=-15']
+		sholder = []
+		days_back = "7"
+		least = 4
+		pages = (1..19).map do |page_number|
+			if page_number == 1
+				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
+			else
+				"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-"
+			end
+		end
 		pages.each do |page|
-			doc = Nokogiri::HTML(URI.open(page))
+			full_url = "#{page}#{days_back}"
+			doc = Nokogiri::HTML(URI.open(full_url))
 			doc.css('.full-G_bAyq40').each do |data|
 				n.push(data.content.strip)
 			end
 
 			doc.css('td').each do |data|
-				phold.push(data.content.strip)
+				sholder.push(data.content.strip)
 			end
+		end
+
+		all_stats = []
+		sholder.each_slice(20) do |slice|
+			all_stats << slice
 		end
 
 		names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
 
-		rstats = []
-		fstats = []
-		pstats = []
-		rteams = Hash.new {|hash,key| hash[key] = []}
-		fteams = Hash.new {|hash,key| hash[key] = []}
-		names.each do |name|
-			pstats = []
-			rstats = []
-			fstats = []
-			pstats = phold.shift(20)
-			p = "#{name}, #{pstats[0]}"
-			fstats = pstats.values_at(1, 10, 17)
-			rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
-			rteams[p] = rstats
-			fteams[p] = fstats
-		end
-
-		rankings = Hash.new {|hash,key| hash[key] = []}
-		holder = Hash.new {|hash,key| hash[key] = []}
-		rstats.size.times do |i|
-			holder.clear
-			hold = []
-			rteams.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.reverse.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
+		all_stats.each_with_index do |stats, index|
+			p = "#{names[index]}, #{stats[0]}"
+			ip = stats[10].to_f
+			pstats = stats.values_at(11, 12, 14, 15, 16).map(&:to_i).sum.to_f
+			work = (pstats/ip).round(2)
+			if ip > least
+				players[p] = work
 			end
 		end
 
-		fstats.size.times do |i|
-			holder.clear
-			hold = []
-			fteams.each do |team,stats|
-				holder[team] = stats[i]
-			end
-			holder.values.uniq.map{|e| e.to_f}.sort.each do |s|
-				holder.each do |team,stat|
-					hold.push(team) if stat.to_f == s
-				end
-			end
-			hold.each_with_index do |team, index|
-				rankings[team] << index
-			end
-		end
-		return rankings
+		sorted = players.sort_by{|k,v| v}.to_h
+		return sorted
 	end #wbpitching
 
 	########################### weekly individual stat leaders #######################
@@ -525,10 +503,13 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		pages = ['https://www.mlb.com/stats/ops?timeframe=-7',
-						'https://www.mlb.com/stats/ops?page=2&timeframe=-7',
-						'https://www.mlb.com/stats/ops?page=3&timeframe=-7',
-						'https://www.mlb.com/stats/ops?page=4&timeframe=-7']
+		pages = (1..8).map do |page_number|
+			if page_number == 1
+				"https://www.mlb.com/stats/at-bats?timeframe=-7"
+			else
+				"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-7"
+			end
+		end
 
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
@@ -573,9 +554,10 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		pages = ['https://www.mlb.com/stats/pitching/era?sortState=asc&timeframe=-15',
-						'https://www.mlb.com/stats/pitching/era?page=2&sortState=asc&timeframe=-15',
-						'https://www.mlb.com/stats/pitching/era?page=3&sortState=asc&timeframe=-15']
+		pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-15',
+					   'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-15',
+					   'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-15',
+					   'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-15']
 
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
