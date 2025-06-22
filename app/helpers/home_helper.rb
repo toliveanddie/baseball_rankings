@@ -128,10 +128,10 @@ module HomeHelper
 		
 	end #over_all
 
-##############################   weekly Pitching #######################
+##############################   9 Day Pitching #######################
 
 	def wpitching
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-9'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -204,7 +204,7 @@ module HomeHelper
 		names = []
 		sholder = []
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-7'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-9'))
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
@@ -314,7 +314,7 @@ module HomeHelper
 		return sorted
 
 	end #bplayers
-
+  ########################### YTD Pitching ###################################
 	def ppitching
 		names = []
 		phold = []
@@ -323,7 +323,8 @@ module HomeHelper
 						 'https://www.mlb.com/stats/pitching/innings-pitched?page=2',
 						 'https://www.mlb.com/stats/pitching/innings-pitched?page=3',
 						 'https://www.mlb.com/stats/pitching/innings-pitched?page=4',
-						 'https://www.mlb.com/stats/pitching/innings-pitched?page=5']
+						 'https://www.mlb.com/stats/pitching/innings-pitched?page=5',
+						 'https://www.mlb.com/stats/pitching/innings-pitched?page=6',]
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
 			doc.css('.full-G_bAyq40').each do |data|
@@ -612,7 +613,7 @@ module HomeHelper
 	def player_stat_cycle
 
 		players = Hash.new
-		7.downto(0) do |days|
+		9.downto(0) do |days|
 			names = []
 			n = []
 			sholder = []
@@ -661,7 +662,7 @@ module HomeHelper
 
 		teams = Hash.new
 
-		7.downto(0) do |days|
+		9.downto(0) do |days|
 			names = []
 			sholder = []
 			base = "https://www.mlb.com/stats/team?timeframe=-"

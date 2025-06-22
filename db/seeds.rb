@@ -16,7 +16,7 @@ require 'open-uri'
 ##############################   weekly Pitching #######################
 
 def swpitching
-	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-9'))
 	names = []
 	doc.css('.full-G_bAyq40').each do |data|
 		names.push(data.content.strip)
@@ -89,7 +89,7 @@ def swbatting
 	names = []
 	sholder = []
 
-	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-7'))
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-9'))
 	doc.css('.full-G_bAyq40').each do |data|
 		names.push(data.content.strip)
 	end
@@ -162,7 +162,7 @@ players = Hash.new
 names = []
 n = []
 sholder = []
-days_back = "7"
+days_back = "9"
 pages = (1..17).map do |page_number|
   if page_number == 1
     "https://www.mlb.com/stats/hits?timeframe=-"
@@ -221,12 +221,18 @@ puts "players added to the post!"
 names = []
 phold = []
 n = []
-pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-15',
-				 'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-15',
-				 'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-15',
-				 'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-15']
+days_back = "9"
+least = 4
+pages = (1..19).map do |page_number|
+	if page_number == 1
+		"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
+	else
+		"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-"
+	end
+end
 pages.each do |page|
-	doc = Nokogiri::HTML(URI.open(page))
+	full_url = "#{page}#{days_back}"
+	doc = Nokogiri::HTML(URI.open(full_url))
 	doc.css('.full-G_bAyq40').each do |data|
 		n.push(data.content.strip)
 	end
@@ -249,9 +255,12 @@ names.each do |name|
 	fstats = []
 	pstats = phold.shift(20)
 	fstats = pstats.values_at(1, 10, 17)
+	ip = pstats[10].to_i
 	rstats = pstats.values_at(2, 3, 11, 12, 13, 14, 15, 16, 18, 19)
-	rteams[name] = rstats
-	fteams[name] = fstats
+	if ip > least
+		rteams[name] = rstats
+		fteams[name] = fstats
+	end
 end
 
 rankings = Hash.new {|hash,key| hash[key] = []}
