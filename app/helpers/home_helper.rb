@@ -504,7 +504,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		pages = (1..9).map do |page_number|
+		pages = (1..17).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/at-bats?timeframe=-9"
 			else
@@ -534,17 +534,17 @@ module HomeHelper
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
 			stats.shift(2)
-			players[p] = stats.map(&:to_f)
+			players[p] = stats.map(&:to_f) if stats[0].to_i > 10
 		end
 
 		stat_name = ['AB', 'R', 'H', '2B', '3B', 'HR', 'RBI', 'BB', 'SO', 'SB', 'CS', 'AVG', 'OBP', 'SLG', 'OPS']
 		leaders = Hash.new
 		stat_name.each_with_index do |stat, index|
 			sorted = players.sort_by {|name, stats| -stats[index]}
-			top_three = sorted.first(3).map do |player|
+			top_ten = sorted.first(10).map do |player|
 				{ name: player[0], stat: player[1][index]}
 			end
-			leaders[stat] = top_three
+			leaders[stat] = top_ten
 		end
 		return leaders
 	end #batting_leaders
@@ -555,10 +555,13 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-9',
-					   'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-9',
-					   'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-9',
-					   'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-9']
+		pages = (1..18).map do |page_number|
+			if page_number == 1
+				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-9"
+			else
+				"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-9"
+			end
+		end
 
 		pages.each do |page|
 			doc = Nokogiri::HTML(URI.open(page))
@@ -582,27 +585,27 @@ module HomeHelper
 		spitchers = Hash.new {|hash,key| hash[key] = []}
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
-			pitchers[p] = stats.values_at(3, 11, 12, 13, 16, 18, 19).map(&:to_f)
-			spitchers[p] = stats.values_at(10, 17).map(&:to_f)
+			pitchers[p] = stats.values_at(3, 11, 12, 13, 16, 18, 19).map(&:to_f) if stats[10].to_f > 4.2
+			spitchers[p] = stats.values_at(10, 17).map(&:to_f) if stats[10].to_f > 4.2
 		end
 
 		stat_name = ['ERA', 'H', 'R', 'ER', 'BB', 'WHIP', 'AVG']
 		leaders = Hash.new
 		stat_name.each_with_index do |stat, index|
 			sorted = pitchers.sort_by {|name, stats| stats[index]}
-			top_three = sorted.first(3).map do |pitcher|
+			top_ten = sorted.first(10).map do |pitcher|
 				{ name: pitcher[0], stat: pitcher[1][index]}
 			end
-			leaders[stat] = top_three
+			leaders[stat] = top_ten
 		end
 
 		stat_name = ['IP', 'SO']
 		stat_name.each_with_index do |stat, index|
 			sorted = spitchers.sort_by {|name, stats| -stats[index]}
-			top_three = sorted.first(3).map do |pitcher|
+			top_ten = sorted.first(10).map do |pitcher|
 				{name: pitcher[0], stat: pitcher[1][index]}
 			end
-			leaders[stat] = top_three
+			leaders[stat] = top_ten
 		end
 		return leaders
 	end #pitching_leaders
