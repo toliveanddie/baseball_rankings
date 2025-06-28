@@ -440,7 +440,7 @@ module HomeHelper
 			sb = stats[11].to_i
 			s = h - (d + t + hr)
 			tb = s + (d*2) + (t*3) + (hr*4)
-			work = r + tb + rbi + bb + sb
+			work = ((r + tb + rbi + bb + sb).to_f/g).round(2)
 			players[p] = work
 		end
 
@@ -487,10 +487,10 @@ module HomeHelper
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
 			ip = stats[10].to_f
-			pstats = stats.values_at(11, 12, 14, 15, 16).map(&:to_i).sum.to_f
-			work = (pstats/ip).round(2)
+			totals = stats.values_at(11, 12, 14, 15, 16).map(&:to_i).sum.to_f
+			work = (totals * 9)/ip
 			if ip > least
-				players[p] = work
+				players[p] = work.round(2)
 			end
 		end
 
