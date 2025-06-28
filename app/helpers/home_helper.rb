@@ -457,7 +457,7 @@ module HomeHelper
 		n = []
 		sholder = []
 		days_back = "9"
-		least = 4
+		least = days_back.to_f * 0.55
 		pages = (1..19).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
