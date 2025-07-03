@@ -440,7 +440,7 @@ module HomeHelper
 			sb = stats[11].to_i
 			s = h - (d + t + hr)
 			tb = s + (d*2) + (t*3) + (hr*4)
-			work = ((r + tb + rbi + bb + sb).to_f/g).round(2)
+			work = r + tb + rbi + bb + sb
 			players[p] = work
 		end
 
@@ -456,8 +456,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "9"
-		least = days_back.to_f * 0.55
+		days_back = "15"
 		pages = (1..19).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -487,9 +486,9 @@ module HomeHelper
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
 			ip = stats[10].to_f
-			totals = stats.values_at(11, 12, 14, 15, 16).map(&:to_i).sum.to_f
+			totals = stats.values_at(11, 13, 15, 16).map(&:to_i).sum.to_f
 			work = (totals * 9)/ip
-			if ip > least
+			if ip > 8
 				players[p] = work.round(2)
 			end
 		end
@@ -497,6 +496,54 @@ module HomeHelper
 		sorted = players.sort_by{|k,v| v}.to_h
 		return sorted
 	end #wbpitching
+
+	################################## k per nine ######################
+
+	def k_per_nine
+		players = Hash.new
+		names = []
+		n = []
+		sholder = []
+		days_back = "15"
+		pages = (1..21).map do |page_number|
+			if page_number == 1
+				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
+			else
+				"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-"
+			end
+		end
+		pages.each do |page|
+			full_url = "#{page}#{days_back}"
+			doc = Nokogiri::HTML(URI.open(full_url))
+			doc.css('.full-G_bAyq40').each do |data|
+				n.push(data.content.strip)
+			end
+
+			doc.css('td').each do |data|
+				sholder.push(data.content.strip)
+			end
+		end
+
+		all_stats = []
+		sholder.each_slice(20) do |slice|
+			all_stats << slice
+		end
+
+		names = n.each_slice(2).map { |first, last| "#{first} #{last}"}
+
+		all_stats.each_with_index do |stats, index|
+			p = "#{names[index]}, #{stats[0]}"
+			ip = stats[10].to_f
+			pstats = stats[17].to_f
+			work = ((pstats * 9)/ip).round(2)
+			if ip > 8
+				players[p] = work
+			end
+		end
+
+		sorted = players.sort_by{|k,v| v}.reverse.to_h
+		return sorted
+	end #k per nine
 
 	########################### weekly individual stat leaders #######################
 
