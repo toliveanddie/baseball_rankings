@@ -488,7 +488,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			totals = stats.values_at(11, 13, 15, 16).map(&:to_i).sum.to_f
 			work = (totals * 9)/ip
-			if ip > 8
+			if ip > 8.0
 				players[p] = work.round(2)
 			end
 		end
@@ -536,7 +536,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			pstats = stats[17].to_f
 			work = ((pstats * 9)/ip).round(2)
-			if ip > 8
+			if ip > 8.0
 				players[p] = work
 			end
 		end
