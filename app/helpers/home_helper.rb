@@ -456,7 +456,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "15"
+		days_back = "9"
 		pages = (1..19).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -488,7 +488,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			totals = stats.values_at(11, 13, 15, 16).map(&:to_i).sum.to_f
 			work = (totals * 9)/ip
-			if ip > 8.0
+			if ip > 4.2
 				players[p] = work.round(2)
 			end
 		end
@@ -504,7 +504,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "15"
+		days_back = "9"
 		pages = (1..21).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -536,7 +536,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			pstats = stats[17].to_f
 			work = ((pstats * 9)/ip).round(2)
-			if ip > 8.0
+			if ip > 4.2
 				players[p] = work
 			end
 		end
