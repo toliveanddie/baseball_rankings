@@ -312,9 +312,9 @@ def batting_leaders
 	sholder = []
 	pages = (1..8).map do |page_number|
 		if page_number == 1
-			"https://www.mlb.com/stats/at-bats?timeframe=-7"
+			"https://www.mlb.com/stats/at-bats?timeframe=-9"
 		else
-			"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-7"
+			"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-9"
 		end
 	end
 
