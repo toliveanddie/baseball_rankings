@@ -373,10 +373,10 @@ def pitching_leaders
 	names = []
 	n = []
 	sholder = []
-	pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-15',
-					 'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-15',
-					 'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-15',
-					 'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-15']
+	pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-9',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-9',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-9',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-9']
 
 	pages.each do |page|
 		doc = Nokogiri::HTML(URI.open(page))
