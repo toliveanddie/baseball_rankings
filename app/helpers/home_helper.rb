@@ -400,7 +400,7 @@ module HomeHelper
 		n = []
 		sholder = []
 		days_back = "9"
-		pages = (1..17).map do |page_number|
+		pages = (1..25).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/hits?timeframe=-"
 			else
@@ -440,7 +440,7 @@ module HomeHelper
 			sb = stats[11].to_i
 			s = h - (d + t + hr)
 			tb = s + (d*2) + (t*3) + (hr*4)
-			work = ((r + tb + rbi + bb + sb).to_f/g).round(2)
+			work = ab + r + tb + rbi + bb + sb
 			players[p] = work
 		end
 
