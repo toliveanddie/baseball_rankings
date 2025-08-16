@@ -440,7 +440,7 @@ module HomeHelper
 			sb = stats[11].to_i
 			s = h - (d + t + hr)
 			tb = s + (d*2) + (t*3) + (hr*4)
-			work = ab + r + tb + rbi + bb + sb
+			work = ((r + tb + rbi + bb + sb).to_f/g).round(2)
 			players[p] = work
 		end
 
