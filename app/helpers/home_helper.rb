@@ -128,10 +128,10 @@ module HomeHelper
 		
 	end #over_all
 
-##############################   9 Day Pitching #######################
+##############################   10 Day Pitching #######################
 
 	def wpitching
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-9'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-10'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -204,7 +204,7 @@ module HomeHelper
 		names = []
 		sholder = []
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-9'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-10'))
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
@@ -391,7 +391,7 @@ module HomeHelper
 		return rankings
 	end # ppitching
 
-	######################### Weekly player ranks ####################
+	######################### 10 day player ranks ####################
 
 	def wbplayers
 
@@ -399,7 +399,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "9"
+		days_back = "10"
 		pages = (1..25).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/hits?timeframe=-"
@@ -449,14 +449,14 @@ module HomeHelper
 
 	end #wbplayers
 
-############################ Weekly pitching ###################################
+############################ 10 day pitching ###################################
 
 	def wbpitching
 		players = Hash.new
 		names = []
 		n = []
 		sholder = []
-		days_back = "9"
+		days_back = "10"
 		pages = (1..19).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -488,7 +488,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			totals = stats.values_at(11, 13, 15, 16).map(&:to_i).sum.to_f
 			work = (totals * 9)/ip
-			if ip > 4.2
+			if ip >= 5
 				players[p] = work.round(2)
 			end
 		end
@@ -504,7 +504,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "9"
+		days_back = "10"
 		pages = (1..21).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -536,7 +536,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			pstats = stats[17].to_f
 			work = ((pstats * 9)/ip).round(2)
-			if ip > 4.2
+			if ip >= 5
 				players[p] = work
 			end
 		end
@@ -545,7 +545,7 @@ module HomeHelper
 		return sorted
 	end #k per nine
 
-	########################### weekly individual stat leaders #######################
+	########################### 10 day stat leaders #######################
 
 	def batting_leaders
 		names = []
@@ -553,9 +553,9 @@ module HomeHelper
 		sholder = []
 		pages = (1..17).map do |page_number|
 			if page_number == 1
-				"https://www.mlb.com/stats/at-bats?timeframe=-9"
+				"https://www.mlb.com/stats/at-bats?timeframe=-10"
 			else
-				"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-9"
+				"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-10"
 			end
 		end
 
@@ -581,7 +581,7 @@ module HomeHelper
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
 			stats.shift(2)
-			players[p] = stats.map(&:to_f) if stats[0].to_i > 10
+			players[p] = stats.map(&:to_f) if stats[0].to_i > 21
 		end
 
 		stat_name = ['AB', 'R', 'H', '2B', '3B', 'HR', 'RBI', 'BB', 'SO', 'SB', 'CS', 'AVG', 'OBP', 'SLG', 'OPS']
@@ -596,7 +596,7 @@ module HomeHelper
 		return leaders
 	end #batting_leaders
 
-		########### weekly pitching stat leaders #######################
+		########### 10 day pitching stat leaders #######################
 
 	def pitching_leaders
 		names = []
@@ -604,9 +604,9 @@ module HomeHelper
 		sholder = []
 		pages = (1..18).map do |page_number|
 			if page_number == 1
-				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-9"
+				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-10"
 			else
-				"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-9"
+				"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-10"
 			end
 		end
 
@@ -658,12 +658,12 @@ module HomeHelper
 	end #pitching_leaders
 
 
-############################## cycle watch ###########################
+############################## 10 day cycle watch ###########################
 
 	def player_stat_cycle
 
 		players = Hash.new
-		9.downto(0) do |days|
+		10.downto(0) do |days|
 			names = []
 			n = []
 			sholder = []
@@ -708,11 +708,13 @@ module HomeHelper
 	end # player_stat_cycle
 
 
+################## 10 day team cycle watch ###########################################
+
 	def team_stat_cycle
 
 		teams = Hash.new
 
-		9.downto(0) do |days|
+		10.downto(0) do |days|
 			names = []
 			sholder = []
 			base = "https://www.mlb.com/stats/team?timeframe=-"
