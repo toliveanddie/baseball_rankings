@@ -449,14 +449,14 @@ module HomeHelper
 
 	end #wbplayers
 
-############################ 10 day pitching ###################################
+############################ 20 day pitching ###################################
 
 	def wbpitching
 		players = Hash.new
 		names = []
 		n = []
 		sholder = []
-		days_back = "10"
+		days_back = "20"
 		pages = (1..19).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -488,7 +488,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			totals = stats.values_at(11, 13, 15, 16).map(&:to_i).sum.to_f
 			work = (totals * 9)/ip
-			if ip >= 5
+			if ip >= 9
 				players[p] = work.round(2)
 			end
 		end
@@ -504,7 +504,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "10"
+		days_back = "20"
 		pages = (1..21).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -536,7 +536,7 @@ module HomeHelper
 			ip = stats[10].to_f
 			pstats = stats[17].to_f
 			work = ((pstats * 9)/ip).round(2)
-			if ip >= 5
+			if ip >= 9
 				players[p] = work
 			end
 		end
@@ -596,7 +596,7 @@ module HomeHelper
 		return leaders
 	end #batting_leaders
 
-		########### 10 day pitching stat leaders #######################
+		########### 20 day pitching stat leaders #######################
 
 	def pitching_leaders
 		names = []
@@ -604,9 +604,9 @@ module HomeHelper
 		sholder = []
 		pages = (1..18).map do |page_number|
 			if page_number == 1
-				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-10"
+				"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-20"
 			else
-				"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-10"
+				"https://www.mlb.com/stats/pitching/innings-pitched?page=#{page_number}&timeframe=-20"
 			end
 		end
 
