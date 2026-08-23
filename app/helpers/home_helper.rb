@@ -658,12 +658,12 @@ module HomeHelper
 	end #pitching_leaders
 
 
-############################## 10 day cycle watch ###########################
+############################## 7 day cycle watch ###########################
 
 	def player_stat_cycle
 
 		players = Hash.new
-		10.downto(0) do |days|
+		7.downto(0) do |days|
 			names = []
 			n = []
 			sholder = []
@@ -708,13 +708,13 @@ module HomeHelper
 	end # player_stat_cycle
 
 
-################## 10 day team cycle watch ###########################################
+################## 7 day team cycle watch ###########################################
 
 	def team_stat_cycle
 
 		teams = Hash.new
 
-		10.downto(0) do |days|
+		7.downto(0) do |days|
 			names = []
 			sholder = []
 			base = "https://www.mlb.com/stats/team?timeframe=-"
