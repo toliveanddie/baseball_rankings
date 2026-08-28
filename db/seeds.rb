@@ -13,10 +13,10 @@ require 'nokogiri'
 require 'open-uri'
 
 # Scrape stats from MLB team stats page
-##############################   weekly Pitching #######################
+##############################   2 week Pitching #######################
 
 def swpitching
-	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-10'))
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-13'))
 	names = []
 	doc.css('.full-G_bAyq40').each do |data|
 		names.push(data.content.strip)
@@ -83,13 +83,13 @@ def swpitching
 	return sorted
 end # swpitching
 
-#################  weekly batting ######################
+#################  2 week batting ######################
 
 def swbatting
 	names = []
 	sholder = []
 
-	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-10'))
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-13'))
 	doc.css('.full-G_bAyq40').each do |data|
 		names.push(data.content.strip)
 	end
@@ -130,7 +130,7 @@ def swbatting
 	return sorted
 end # swbatting
 
-######################  weekly overall ########################
+######################  2 week overall ########################
 
 
 def swover_all
@@ -155,14 +155,14 @@ end
 puts "Post titled '#{post.title}' created with teams loaded"
 
 
-###################### players #################################
+###################### 2 week player ranks #################################
 
 
 players = Hash.new
 names = []
 n = []
 sholder = []
-days_back = "10"
+days_back = "13"
 pages = (1..17).map do |page_number|
   if page_number == 1
     "https://www.mlb.com/stats/hits?timeframe=-"
@@ -216,13 +216,13 @@ end
 
 puts "players added to the post!"
 
-#################### Pitchers #####################################
+#################### 20 day Pitcher ranks #####################################
 
 names = []
 phold = []
 n = []
-days_back = "10"
-least = 5
+days_back = "20"
+least = 9
 pages = (1..19).map do |page_number|
 	if page_number == 1
 		"https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-"
@@ -304,7 +304,7 @@ end
 puts "pitchers added to the post!"
 ### end pitchers ####
 
-############## weekly batting stat leaders ###################################
+############## 2 week batting stat leaders ###################################
 
 def batting_leaders
 	names = []
@@ -312,9 +312,9 @@ def batting_leaders
 	sholder = []
 	pages = (1..8).map do |page_number|
 		if page_number == 1
-			"https://www.mlb.com/stats/at-bats?timeframe=-10"
+			"https://www.mlb.com/stats/at-bats?timeframe=-13"
 		else
-			"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-10"
+			"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-13"
 		end
 	end
 
@@ -367,16 +367,16 @@ batting_leaders.each do |stat, players|
 	puts "#{stat} added"
 end
 
-########### weekly pitching stat leaders #######################
+########### 20 day pitching stat leaders #######################
 
 def pitching_leaders
 	names = []
 	n = []
 	sholder = []
-	pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-10',
-					 'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-10',
-					 'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-10',
-					 'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-10']
+	pages = ['https://www.mlb.com/stats/pitching/innings-pitched?timeframe=-20',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=2&timeframe=-20',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=3&timeframe=-20',
+					 'https://www.mlb.com/stats/pitching/innings-pitched?page=4&timeframe=-20']
 
 	pages.each do |page|
 		doc = Nokogiri::HTML(URI.open(page))
