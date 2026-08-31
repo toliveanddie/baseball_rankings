@@ -131,7 +131,7 @@ module HomeHelper
 ##############################   2 week Pitching #######################
 
 	def wpitching
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-14'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-13'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -204,7 +204,7 @@ module HomeHelper
 		names = []
 		sholder = []
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-14'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-13'))
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
@@ -633,7 +633,7 @@ module HomeHelper
 		all_stats.each_with_index do |stats, index|
 			p = "#{names[index]}, #{stats[0]}"
 			pitchers[p] = stats.values_at(3, 11, 12, 13, 16, 18, 19).map(&:to_f) if stats[10].to_f > 4.2
-			spitchers[p] = stats.values_at(10, 17).map(&:to_f) if stats[10].to_f > 4.2
+			spitchers[p] = stats.values_at(10, 17).map(&:to_f) if stats[10].to_f >= 9
 		end
 
 		stat_name = ['ERA', 'H', 'R', 'ER', 'BB', 'WHIP', 'AVG']
