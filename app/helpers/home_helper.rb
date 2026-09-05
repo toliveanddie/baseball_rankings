@@ -128,10 +128,10 @@ module HomeHelper
 		
 	end #over_all
 
-##############################   2 week Pitching #######################
+##############################   1 week Pitching #######################
 
 	def wpitching
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-13'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
 		names = []
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
@@ -198,13 +198,13 @@ module HomeHelper
 		return sorted
 	end # wpitching
 
-	################# 2 week batting ######################
+	################# 1 week batting ######################
 
 	def wbatting
 		names = []
 		sholder = []
 
-		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-13'))
+		doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team?timeframe=-7'))
 		doc.css('.full-G_bAyq40').each do |data|
 			names.push(data.content.strip)
 		end
@@ -245,7 +245,7 @@ module HomeHelper
 		return sorted
 	end # wbatting
 
-	######################  2 week overall ########################
+	######################  1 week overall ########################
 
 
 	def wover_all
@@ -391,7 +391,7 @@ module HomeHelper
 		return rankings
 	end # ppitching
 
-	######################### 2 week player ranks ####################
+	######################### 1 week player ranks ####################
 
 	def wbplayers
 
@@ -399,7 +399,7 @@ module HomeHelper
 		names = []
 		n = []
 		sholder = []
-		days_back = "13"
+		days_back = "7"
 		pages = (1..25).map do |page_number|
 			if page_number == 1
 				"https://www.mlb.com/stats/hits?timeframe=-"
@@ -545,7 +545,7 @@ module HomeHelper
 		return sorted
 	end #k per nine
 
-	########################### 2 week stat leaders #######################
+	########################### 1 week stat leaders #######################
 
 	def batting_leaders
 		names = []
@@ -553,9 +553,9 @@ module HomeHelper
 		sholder = []
 		pages = (1..17).map do |page_number|
 			if page_number == 1
-				"https://www.mlb.com/stats/at-bats?timeframe=-13"
+				"https://www.mlb.com/stats/at-bats?timeframe=-7"
 			else
-				"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-13"
+				"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-7"
 			end
 		end
 

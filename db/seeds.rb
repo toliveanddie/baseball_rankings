@@ -13,10 +13,10 @@ require 'nokogiri'
 require 'open-uri'
 
 # Scrape stats from MLB team stats page
-##############################   2 week Pitching #######################
+##############################   1 week Pitching #######################
 
 def swpitching
-	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-13'))
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/pitching?timeframe=-7'))
 	names = []
 	doc.css('.full-G_bAyq40').each do |data|
 		names.push(data.content.strip)
@@ -83,13 +83,13 @@ def swpitching
 	return sorted
 end # swpitching
 
-#################  2 week batting ######################
+#################  1 week batting ######################
 
 def swbatting
 	names = []
 	sholder = []
 
-	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-13'))
+	doc = Nokogiri::HTML(URI.open('https://www.mlb.com/stats/team/ops?timeframe=-7'))
 	doc.css('.full-G_bAyq40').each do |data|
 		names.push(data.content.strip)
 	end
@@ -130,7 +130,7 @@ def swbatting
 	return sorted
 end # swbatting
 
-######################  2 week overall ########################
+######################  1 week overall ########################
 
 
 def swover_all
@@ -155,14 +155,14 @@ end
 puts "Post titled '#{post.title}' created with teams loaded"
 
 
-###################### 2 week player ranks #################################
+###################### 1 week player ranks #################################
 
 
 players = Hash.new
 names = []
 n = []
 sholder = []
-days_back = "13"
+days_back = "7"
 pages = (1..17).map do |page_number|
   if page_number == 1
     "https://www.mlb.com/stats/hits?timeframe=-"
@@ -304,7 +304,7 @@ end
 puts "pitchers added to the post!"
 ### end pitchers ####
 
-############## 2 week batting stat leaders ###################################
+############## 1 week batting stat leaders ###################################
 
 def batting_leaders
 	names = []
@@ -312,9 +312,9 @@ def batting_leaders
 	sholder = []
 	pages = (1..8).map do |page_number|
 		if page_number == 1
-			"https://www.mlb.com/stats/at-bats?timeframe=-13"
+			"https://www.mlb.com/stats/at-bats?timeframe=-7"
 		else
-			"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-13"
+			"https://www.mlb.com/stats/at-bats?page=#{page_number}&timeframe=-7"
 		end
 	end
 

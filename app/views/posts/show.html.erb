@@ -3,7 +3,7 @@
 	<%= link_to 'Back', posts_path, class: 'btn btn-secondary' %>
 </div>
 <div class="container mt-4">
-  <h1 class="text-center">2 Week Ranks</h1>
+  <h1 class="text-center">Weekly Ranks</h1>
   <p>
     <%= @post.title %>
   </p>
@@ -39,7 +39,7 @@
 </div>
 <div class = "container">
 	<div class="row">
-	<h1 style="color: blue !important;">14 Day Batting Leaders</h1>
+	<h1 style="color: blue !important;">Weekly Batting Leaders</h1>
 		<% @post_leaders.leaders.each do |leader| %>
 			<div class="col-4">
 			  <h4><%= leader.stat %></h4>
